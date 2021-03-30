@@ -2,7 +2,7 @@
 
 export interface TimeSheet {
     id: number;
-    state: State[];
+    state: State;
     title: string;
     type: State[];
     duration: Date;
