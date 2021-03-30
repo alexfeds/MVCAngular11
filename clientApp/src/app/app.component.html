@@ -1,0 +1,96 @@
+﻿<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+
+
+<p-table [value]="timesheets" dataKey="id" editMode="row" (onEditComplete)="rowEdited($event)" (onEditInit)="rowEdited($event)">
+    <ng-template pTemplate="caption">
+        <div class="p-d-flex">
+            <button (click)="addNewRow()" pButton pRipple type="button" label="New" styleClass="p-button-sm" class="p-button-rounded p-button-help"></button>
+            <button pButton pRipple type="button" label="Submit" styleClass="p-button-sm" class="p-button-rounded"></button>
+            <span class="p-input-icon-left p-ml-auto">
+                <i class="pi pi-search"></i>
+                <p-inputNumber [(ngModel)]="hourRate" [minFractionDigits]="2" ngDefaultControl placeholder="Hourly Rate" mode="decimal"></p-inputNumber>
+
+            </span>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="width: 5rem">Id</th>
+            <th style="width: 10rem">State</th>
+            <th style="width: 10rem">Title</th>
+            <th style="width: 10rem">Type</th>
+            <th style="width: 10rem">Duration</th>
+            <th style="width: 10rem">Hourly Rate</th>
+            <th style="width: 10rem">Total</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-time_sheet let-editing="editing" let-ri="rowIndex">
+        <tr [pEditableRow]="time_sheet">
+
+            <td style="width: 10rem" [pEditableColumn]="time_sheet" [pEditableColumnField]="'id'" [pEditableColumnRowIndex]="ri">
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input class="p-inputtext-sm width-full" pInputText type="text" [(ngModel)]="time_sheet.id">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{time_sheet.id}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+
+            <td style="width: 10rem"> <p-dropdown styleClass="drop-full-width" [options]="time_sheet.state" [(ngModel)]="selectedState" optionLabel="name"></p-dropdown></td>
+            <td style="width: 10rem" [pEditableColumn]="time_sheet" [pEditableColumnField]="'title'" [pEditableColumnRowIndex]="ri">
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input class="p-inputtext-sm width-full" pInputText type="text" [(ngModel)]="time_sheet.title">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{time_sheet.title}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td style="width: 10rem"> <p-dropdown styleClass="drop-full-width"  [options]="time_sheet.type" [(ngModel)]="selectedJobType" optionLabel="name"></p-dropdown></td>
+            <td style="width: 10rem" [pEditableColumn]="time_sheet" [pEditableColumnField]="'duration'" [pEditableColumnRowIndex]="ri">
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+
+                        <p-calendar [(ngModel)]="time_sheet.duration" (onBlur)="onClose($event)" [timeOnly]="true" inputId="timeonly"></p-calendar>
+
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{time_sheet.duration | date:'hh:mm'}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td style="width: 10rem" [pEditableColumn]="time_sheet" [pEditableColumnField]="'hourlyRate'" [pEditableColumnRowIndex]="ri">
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input class="p-inputtext-sm width-full" pInputText type="text" [(ngModel)]="time_sheet.hourlyRate">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{time_sheet.hourlyRate | number : '1.2-2'}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td style="width: 10rem" [pEditableColumn]="time_sheet" [pEditableColumnField]="'total'" [pEditableColumnRowIndex]="ri">
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input class="p-inputtext-sm width-full" pInputText type="text" [(ngModel)]="time_sheet.total">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{time_sheet.total}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+
+            <td  style="text-align:center">
+                <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(time_sheet)" class="p-button-rounded p-button-text"></button>
+                <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="onRowEditSave(time_sheet)" class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+                <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(time_sheet, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
+                <button  *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash" (click)="confirmDelete(ri)" class="p-button-rounded p-button-text p-button-danger"></button>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+
