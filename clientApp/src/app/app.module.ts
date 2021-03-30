@@ -16,6 +16,8 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { CalendarModule } from 'primeng/calendar';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
       InputNumberModule,
       CalendarModule,
       ConfirmDialogModule,
+      MessageModule,
+      MessagesModule,
 
       BrowserAnimationsModule
   ],

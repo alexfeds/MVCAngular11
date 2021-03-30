@@ -1,8 +1,23 @@
 ﻿body {
+    font-size: 0.8em;
 }
 input.p-inputtext-sm.width-full{
     width: 100%;
 }
 :host>>> .drop-full-width.p-dropdown.p-component {
     width: 100%;
+}
+
+tr.p-selectable-row.ng-star-inserted.disabled {
+    background-color: #f5f5f5;
+    opacity: 0.3;
+}
+.button-wrapper {
+    padding-right: 1em;
+}
+
+td.p-editable-column.disabled {
+    pointer-events: none;
+    background-color: #f5f5f5;
+    opacity: 0.3;
 }

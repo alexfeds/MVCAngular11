@@ -7,8 +7,6 @@ export function timeToDecimal(t) {
         });
 }
 
-
-
 // rounde up to the nearest 15 minutes
 export function roundTime  (time, minutesToRound)  {
     // e.g 05:34 AM to 05:34

@@ -1,16 +1,26 @@
 ﻿<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+<p-messages [closable]="false"></p-messages>
 
-
-<p-table [value]="timesheets" dataKey="id" editMode="row" (onEditComplete)="rowEdited($event)" (onEditInit)="rowEdited($event)">
+<p-table [value]="timesheets" dataKey="id" editMode="row" [rowTrackBy]="trackByIndex" (onRowSelect)="onRowSelect($event)" (onEditComplete)="rowEdited($event)" (onEditInit)="rowEdited($event)" selectionMode="single" [(selection)]="selectedTimeSheet">
     <ng-template pTemplate="caption">
         <div class="p-d-flex">
-            <button (click)="addNewRow()" pButton pRipple type="button" label="New" styleClass="p-button-sm" class="p-button-rounded p-button-help"></button>
-            <button pButton pRipple type="button" label="Submit" styleClass="p-button-sm" class="p-button-rounded"></button>
+            <div class="button-wrapper">
+                <button (click)="addNewRow()" pButton pRipple type="button" label="New" styleClass="p-button-sm" class="p-button-rounded p-button-help"></button>
+            </div>
+            <div class="button-wrapper">
+                <button (click)="submitRow()" icon="pi pi-check" pButton pRipple type="button" label="Submit" styleClass="p-button-sm" class="p-button-rounded"></button>
+            </div>
+            <div class="button-wrapper">
+                <button (click)="unSubmitRow()" icon="pi pi-refresh" pButton pRipple type="button" label="Unsubmit" styleClass="p-button-sm" class="p-button-rounded  p-button-danger"></button>
+            </div>
+
+
             <span class="p-input-icon-left p-ml-auto">
-                <i class="pi pi-search"></i>
+
                 <p-inputNumber [(ngModel)]="hourRate" [minFractionDigits]="2" ngDefaultControl placeholder="Hourly Rate" mode="decimal"></p-inputNumber>
 
             </span>
+
         </div>
     </ng-template>
     <ng-template pTemplate="header">
@@ -24,22 +34,19 @@
             <th style="width: 10rem">Total</th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-time_sheet let-editing="editing" let-ri="rowIndex">
-        <tr [pEditableRow]="time_sheet">
+    <ng-template pTemplate="body" let-time_sheet let-editing="editing" let-ri="rowIndex;">
 
-            <td style="width: 10rem" [pEditableColumn]="time_sheet" [pEditableColumnField]="'id'" [pEditableColumnRowIndex]="ri">
-                <p-cellEditor>
+        <tr [ngClass]="{'disabled': time_sheet.state.code == 'submitted'}" [pEditableRow]="time_sheet" [pSelectableRow]="time_sheet" [pSelectableRowIndex]="ri" [pEditableRowDisabled]="some">
+
+            <td [ngClass]="{'disabled': time_sheet.state.code == 'submitted'}" style="width: 10rem" [pEditableColumn]="time_sheet" [pEditableColumnField]="'id'" [pEditableColumnRowIndex]="ri">  
                     <ng-template pTemplate="input">
                         <input class="p-inputtext-sm width-full" pInputText type="text" [(ngModel)]="time_sheet.id">
                     </ng-template>
-                    <ng-template pTemplate="output">
-                        {{time_sheet.id}}
-                    </ng-template>
-                </p-cellEditor>
+                        {{time_sheet.id}}        
             </td>
 
-            <td style="width: 10rem"> <p-dropdown styleClass="drop-full-width" [options]="time_sheet.state" [(ngModel)]="selectedState" optionLabel="name"></p-dropdown></td>
-            <td style="width: 10rem" [pEditableColumn]="time_sheet" [pEditableColumnField]="'title'" [pEditableColumnRowIndex]="ri">
+            <td [ngClass]="{'disabled': time_sheet.state.code == 'submitted'}" style="width: 10rem"> <p-dropdown [readonly]="time_sheet.state.code == 'submitted'" (onChange)="onStateDropChange($event)" styleClass="drop-full-width" name=a{{ri}} [options]="states" [(ngModel)]="selectedState[ri]" optionLabel="name"></p-dropdown></td>
+            <td [ngClass]="{'disabled': time_sheet.state.code == 'submitted'}" style="width: 10rem" [pEditableColumn]="time_sheet" [pEditableColumnField]="'title'" [pEditableColumnRowIndex]="ri">
                 <p-cellEditor>
                     <ng-template pTemplate="input">
                         <input class="p-inputtext-sm width-full" pInputText type="text" [(ngModel)]="time_sheet.title">
@@ -49,8 +56,8 @@
                     </ng-template>
                 </p-cellEditor>
             </td>
-            <td style="width: 10rem"> <p-dropdown styleClass="drop-full-width"  [options]="time_sheet.type" [(ngModel)]="selectedJobType" optionLabel="name"></p-dropdown></td>
-            <td style="width: 10rem" [pEditableColumn]="time_sheet" [pEditableColumnField]="'duration'" [pEditableColumnRowIndex]="ri">
+            <td [ngClass]="{'disabled': time_sheet.state.code == 'submitted'}" style="width: 10rem"> <p-dropdown [readonly]="time_sheet.state.code == 'submitted'" styleClass="drop-full-width" name=a{{ri}} [options]="jobTypes" [(ngModel)]="selectedJobType[ri]" optionLabel="name"></p-dropdown></td>
+            <td [ngClass]="{'disabled': time_sheet.state.code == 'submitted'}" style="width: 10rem" [pEditableColumn]="time_sheet" [pEditableColumnField]="'duration'" [pEditableColumnRowIndex]="ri">
                 <p-cellEditor>
                     <ng-template pTemplate="input">
 
@@ -62,7 +69,7 @@
                     </ng-template>
                 </p-cellEditor>
             </td>
-            <td style="width: 10rem" [pEditableColumn]="time_sheet" [pEditableColumnField]="'hourlyRate'" [pEditableColumnRowIndex]="ri">
+            <td [ngClass]="{'disabled': time_sheet.state.code == 'submitted'}" style="width: 10rem" [pEditableColumn]="time_sheet" [pEditableColumnField]="'hourlyRate'" [pEditableColumnRowIndex]="ri">
                 <p-cellEditor>
                     <ng-template pTemplate="input">
                         <input class="p-inputtext-sm width-full" pInputText type="text" [(ngModel)]="time_sheet.hourlyRate">
@@ -72,7 +79,7 @@
                     </ng-template>
                 </p-cellEditor>
             </td>
-            <td style="width: 10rem" [pEditableColumn]="time_sheet" [pEditableColumnField]="'total'" [pEditableColumnRowIndex]="ri">
+            <td [ngClass]="{'disabled': time_sheet.state.code == 'submitted'}" style="width: 10rem" [pEditableColumn]="time_sheet" [pEditableColumnField]="'total'" [pEditableColumnRowIndex]="ri">
                 <p-cellEditor>
                     <ng-template pTemplate="input">
                         <input class="p-inputtext-sm width-full" pInputText type="text" [(ngModel)]="time_sheet.total">
@@ -83,11 +90,12 @@
                 </p-cellEditor>
             </td>
 
-            <td  style="text-align:center">
+            <td style="text-align:center">
                 <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(time_sheet)" class="p-button-rounded p-button-text"></button>
                 <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="onRowEditSave(time_sheet)" class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
                 <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(time_sheet, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
-                <button  *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash" (click)="confirmDelete(ri)" class="p-button-rounded p-button-text p-button-danger"></button>
+                <button *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash" (click)="confirmDelete(ri)" class="p-button-rounded p-button-text p-button-danger"></button>
+
             </td>
         </tr>
     </ng-template>
